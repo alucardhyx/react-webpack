@@ -3,7 +3,7 @@ const webpack = require('webpack')
 const webpackDevServer = require('webpack-dev-server')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CleanWebpackPlugin = require("clean-webpack-plugin");
-// const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
 var DashboardPlugin = require('webpack-dashboard/plugin');
 function resolve(dir) {
   return path.join(__dirname, "..", dir);
@@ -64,7 +64,10 @@ const webpackConfigure = {
         },
         {
           test: /\.scss$/,
-          use: [{ loader: "style-loader" }, { loader: "css-loader" }, { loader: "postcss-loader"}, { loader: "sass-loader" }]
+          use: ExtractTextPlugin.extract({
+            fallback: "style-loader",
+            use: [{ loader: "css-loader" }, { loader: "postcss-loader"}, { loader: "sass-loader" }]
+          })
         }
     ]
 
@@ -81,19 +84,6 @@ const webpackConfigure = {
   // 通过在浏览器调试工具(browser devtools)中添加元信息(meta info)增强调试 牺牲了构建速度的 `source-map'
   // 是最详细的。
 
-  devServer: {
-      proxy: { // proxy URLs to backend development server
-          '/api': 'http://localhost:3000'
-      },
-      contentBase: path.join(__dirname, 'public'), // boolean | string | array, static file location
-      // compress: true, // enable gzip compression
-      historyApiFallback: true, // true for index.html upon 404, object for multiple paths
-      hot: true, // hot module replacement. Depends on HotModuleReplacementPlugin
-      https: false, // true for self-signed, object for cert authority
-      noInfo: true, // only errors & warns on hot reload
-      open: true,
-      port: 3000
-  },
   plugins: [
     // new webpack.optimize.CommonsChunkPlugin({name: 'vendor', filename: 'vendor-[hash].min.js'}),
     // new webpack.optimize.UglifyJsPlugin({
@@ -103,12 +93,14 @@ const webpackConfigure = {
     //   }
     // }),
     // new CleanWebpackPlugin('./dist'),
+    new ExtractTextPlugin({
+      filename: 'app.css'
+    }),
     new HtmlWebpackPlugin({
       filename: "index.html", //打包后的文件名
       template: path.join(__dirname, "index.html"), //要打包文件的路径
       inject: true
     }),
-    new webpack.HotModuleReplacementPlugin()
     // new DashboardPlugin()
   ],
   // list of additional plugins

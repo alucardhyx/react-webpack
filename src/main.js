@@ -1,4 +1,4 @@
-var test = require('./app.jsx')
-require('./test.css')
-console.log(test)
+import 'test.css'
+
 console.log('a')
+console.log('b')
