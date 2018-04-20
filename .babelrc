@@ -1,7 +1,10 @@
 {
     "presets": [
+        "react",
+        "stage-2",
         [
-            ["env", {
+            "env",
+            {
                 "modules": false,
                 "targets": {
                     "browsers": [
@@ -9,8 +12,9 @@
                         "safari >= 7"
                     ]
                 }
-            }],
-             "react"]
+            }
+        ]
     ],
-    "plugins": ["transform-runtime"]
+    "plugins": ["transform-runtime", "react-hot-loader/babel"],
+    "comments": true
 }

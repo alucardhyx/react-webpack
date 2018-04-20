@@ -3,14 +3,15 @@ const webpack = require('webpack')
 const webpackDevServer = require('webpack-dev-server')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CleanWebpackPlugin = require("clean-webpack-plugin");
+// const DashboardPlugin = require("webpack-dashboard");
 // const ExtractTextPlugin = require('extract-text-webpack-plugin')
-var DashboardPlugin = require('webpack-dashboard/plugin');
+// var DashboardPlugin = require('webpack-dashboard/plugin');
 function resolve(dir) {
   return path.join(__dirname, "..", dir);
 }
     // console.log(path.join(__dirname , "index.html"))
 
-// console.log(webpack)
+console.log(resolve('src'))
 const webpackConfigure = {
 //   mode: "production", // "production" | "development" | "none"
   // Chosen mode tells webpack to use its built-in optimizations accordingly.
@@ -51,11 +52,31 @@ const webpackConfigure = {
     rules: [
       // rules for modules (configure loaders, parser options, etc.)
       {
-        test: /\.(js|jsx)$/,
+        test: /\.jsx?$/,
         include : [resolve('src')],
         exclude : [resolve('node_modules')],
         use: {
-          loader: "babel-loader"
+          // loader: "babel-loader?cacheDirectory",
+          loader: "babel-loader",
+          options: {
+             babelrc: false,
+              "presets": [
+                "react",
+                "stage-2",
+                [
+                    "env",
+                    {
+                        "modules": false,
+                        "targets": {
+                            "browsers": [
+                                "last 2 versions",
+                                "safari >= 7"
+                            ]
+                        }
+                    }
+                ]
+            ],
+          }
         }
       },
         {
@@ -64,11 +85,9 @@ const webpackConfigure = {
         },
         {
           test: /\.scss$/,
-          use: [{ loader: "style-loader" }, { loader: "css-loader" }, { loader: "postcss-loader"}, { loader: "sass-loader" }]
-        }
+          use: [{ loader: "style-loader" }, { loader: "css-loader" }, { loader: "sass-loader" }, { loader: "postcss-loader"}]
+        },
     ]
-
-    /* Advanced module configuration (click to show) */
   },
 
   // devtool : "source-map", // enum
@@ -83,16 +102,17 @@ const webpackConfigure = {
 
   devServer: {
       proxy: { // proxy URLs to backend development server
-          '/api': 'http://localhost:3000'
+          '/api': 'http://localhost:5000'
       },
-      contentBase: path.join(__dirname, 'public'), // boolean | string | array, static file location
+      contentBase: path.join(__dirname, 'dist'), // boolean | string | array, static file location
       // compress: true, // enable gzip compression
       historyApiFallback: true, // true for index.html upon 404, object for multiple paths
       hot: true, // hot module replacement. Depends on HotModuleReplacementPlugin
       https: false, // true for self-signed, object for cert authority
-      noInfo: true, // only errors & warns on hot reload
-      open: true,
-      port: 3000
+      open: false,
+      inline: true,
+      progress: true,
+      port : 5000
   },
   plugins: [
     // new webpack.optimize.CommonsChunkPlugin({name: 'vendor', filename: 'vendor-[hash].min.js'}),
@@ -108,7 +128,7 @@ const webpackConfigure = {
       template: path.join(__dirname, "index.html"), //要打包文件的路径
       inject: true
     }),
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
     // new DashboardPlugin()
   ],
   // list of additional plugins
