@@ -1,20 +1,10 @@
 {
-    "presets": [
-        "react",
-        "stage-2",
-        [
-            "env",
-            {
-                "modules": false,
-                "targets": {
-                    "browsers": [
-                        "last 2 versions",
-                        "safari >= 7"
-                    ]
-                }
-            }
-        ]
-    ],
-    "plugins": ["transform-runtime", "react-hot-loader/babel"],
-    "comments": true
+  "presets": [
+    "@babel/preset-react",
+    "@babel/preset-env",
+    ["@babel/preset-stage-2", {
+        "decoratorsLegacy": true
+    }]
+  ],
+  "plugins": ["react-hot-loader/babel", "@babel/transform-runtime"]
 }

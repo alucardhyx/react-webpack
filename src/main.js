@@ -1,15 +1,37 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-// import {Test} from './app'
-require('./test.css')
 // let a1 = new Test()
+require('test.css')
+require('test1.scss')
 // a1.getName()
-console.log('a')
-console.log('b')
+ var func = str => {
+     document.getElementById('root').innerHTML = str;
+ };
+ func('我现在在使用Babel!');
+ console.log('aa')
 
+ let sleep = () => {
+     return new Promise(resolve => {
+         setTimeout(() => {
+             resolve(11111)
+         }, 3000)
+     })
+ }
 
-// class Greeting extends React.Component {     render() {         return
-// <h1>Hello, {this.props.name}</h1>;     } }
+ async function todo () {
+     let ret = await sleep()
 
-ReactDOM.render(
-    <h1>Hello, world!</h1>, document.getElementById('root'));
+     console.log('新的promise', ret)
+ }
+todo()
+
+let One = props => {
+  return <div>{props.test}</div>;
+
+  function doA() {
+  }
+};
+
+ReactDOM.render(<div>
+        <One test="aaa"></One>
+    </div>,document.getElementById('root'))
