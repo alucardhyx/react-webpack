@@ -1,16 +1,14 @@
 const path = require('path')
 const webpack = require('webpack')
-// const webpackDevServer = require('webpack-dev-server')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const CleanWebpackPlugin = require("clean-webpack-plugin");
 // const ExtractTextPlugin = require('extract-text-webpack-plugin')
+var CleanWebpackPlugin = require('clean-webpack-plugin');
 var DashboardPlugin = require('webpack-dashboard/plugin');
+
 function resolve(dir) {
   return path.join(__dirname, "..", dir);
 }
-    // console.log(path.join(__dirname , "index.html"))
 
-// console.log(webpack)
 const webpackConfigure = {
   mode: "development", // "production" | "development" | "none"
   // Chosen mode tells webpack to use its built-in optimizations accordingly.
@@ -30,7 +28,6 @@ const webpackConfigure = {
 
   output: {
     // options related to how webpack emits results
-
     path: path.resolve(__dirname, "dist"), // string
     // the target directory for all output files must be an absolute path (use the
     // Node.js path module)
@@ -55,36 +52,76 @@ const webpackConfigure = {
     rules: [
       // rules for modules (configure loaders, parser options, etc.)
       {
-        test: /\.js$/,
-        loader: "babel-loader?compact=false"
-      },
-      {
-        test: /\.css$/,
+        test: /\.(js|jsx)$/,
         use: [
-          { loader: "style-loader" },
-          { loader: "css-loader" },
-          { loader: "postcss-loader" }
+          {
+            loader: 'babel-loader?compact=false'
+          }
         ]
       },
       {
-        test: /\.scss$/,
+        test: /\.(scss|css)$/,
         use: [
-          { loader: "style-loader" },
-          { loader: "css-loader" },
-          { loader: "postcss-loader" },
-          { loader: "sass-loader" }
+          { loader: 'style-loader' },
+          { loader: 'css-loader',options:{ sourceMap: true }},
+          { loader: 'postcss-loader', options: { sourceMap: true }},
+          { loader: 'sass-loader',options: { sourceMap: true }}
         ]
+      },
+      {
+        test: /\.(png|jpg|jpeg|gif)$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'url-loader?limit=12&name=images/[name].[hash:8].[ext]',
+          },
+        ],
+      },
+      {
+        test: /\.(woff|woff2|ttf|eot|svg)$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'file-loader?name=fonts/[name].[hash:8].[ext]',
+          }
+        ],
       }
     ]
-    /* Advanced module configuration (click to show) */
   },
-
+  optimization: {
+    splitChunks: {
+      chunks: 'all'
+    }
+  //   splitChunks:{
+  //     // 避免过度分割，设置尺寸不小于30kb
+  //     //cacheGroups会继承这个值
+  //     minSize:30000,
+  //     cacheGroups:{
+  //         main:{
+  //             test: /[\\/]node_modules[\\/]react[\\/]/,
+  //             name: './js/main',
+  //             chunks:'all'
+  //         },
+  //         vendors:{
+  //             test:/[\\/]node_modules[\\/]?!(react)[\\/]/,
+  //             name: './js/vendors',
+  //             chunks:'all'
+  //         },
+  //         extractedJS:{
+  //             test:/[\\/]src[\\/].+\.js$/,
+  //             name:'./js/extractedJS',
+  //             chunks:'all'
+  //         }
+          
+  //     }
+  // }
+  },
   devServer: {
     proxy: {
       // proxy URLs to backend development server
       "/api": "http://localhost:3000"
     },
-    contentBase: path.join(__dirname, "public"), // boolean | string | array, static file location
+    contentBase: path.join(__dirname, "dist"), // boolean | string | array, static file location
     // compress: true, // enable gzip compression
     historyApiFallback: true, // true for index.html upon 404, object for multiple paths
     hot: true, // hot module replacement. Depends on HotModuleReplacementPlugin
@@ -108,7 +145,7 @@ const webpackConfigure = {
       template: path.join(__dirname, "index.html"), //要打包文件的路径
       inject: true
     }),
-    new DashboardPlugin()
+    new DashboardPlugin({ port: 3001 })
   ],
   // list of additional plugins
   node: {

@@ -1,37 +1,31 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 // let a1 = new Test()
-require('test.css')
-require('test1.scss')
+// import './test.css'
+
+// sayHello()
+import Hello from './Hello'
+// import './test1.scss'
 // a1.getName()
- var func = str => {
-     document.getElementById('root').innerHTML = str;
- };
- func('我现在在使用Babel!');
- console.log('aa')
 
- let sleep = () => {
-     return new Promise(resolve => {
-         setTimeout(() => {
-             resolve(11111)
-         }, 3000)
-     })
- }
+//  let sleep = () => {
+//      return new Promise(resolve => {
+//          setTimeout(() => {
+//              resolve(11111)
+//          }, 3000)
+//      })
+//  }
 
- async function todo () {
-     let ret = await sleep()
+//  async function todo () {
+//      let ret = await sleep()
 
-     console.log('新的promise', ret)
- }
-todo()
+//      console.log('新的promise', ret)
+//  }
+// todo()
 
-let One = props => {
-  return <div>{props.test}</div>;
-
-  function doA() {
-  }
-};
+let Test = props => (<div>{props.content}</div>)
 
 ReactDOM.render(<div>
-        <One test="aaa"></One>
-    </div>,document.getElementById('root'))
+            <Test content="这是一个组件"></Test>
+            <Hello />
+        </div>,document.getElementById('root'))
